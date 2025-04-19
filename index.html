@@ -1,1 +1,611 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WorkPilot Functional Prototype</title>
+  <style>
+    /* Basic Layout and Typography */
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #eef2f7;
+      margin: 0;
+      padding: 20px;
+      color: #2b2e4a;
+    }
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 10px;
+    }
+    /* AI Banner */
+    .ai-banner {
+      background-color: #dff9fb;
+      border: 1px solid #c8e6f2;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+      line-height: 1.5;
+      font-size: 16px;
+    }
+    /* Mood Selector using Emojis */
+    .mood-control {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 18px;
+      color: #2b2e4a;
+    }
+    .mood-control .emoji {
+      font-size: 32px;
+      cursor: pointer;
+      margin: 0 10px;
+      padding: 6px;
+      border: 2px solid transparent;
+      border-radius: 8px;
+      transition: background-color 0.2s, border-color 0.2s;
+    }
+    .mood-control .emoji:hover {
+      background-color: #e0e0e0;
+      border-color: #b0bec5;
+    }
+    .mood-control .emoji.selected {
+      background-color: #74b9ff;
+      border-color: #0984e3;
+    }
+    .mood-control button {
+      padding: 6px 12px;
+      font-size: 16px;
+      margin-left: 10px;
+      background-color: #2b2e4a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    /* Productivity Scale Section */
+    .productivity-scale {
+      background: #f1f7f9;
+      border: 1px solid #cddde4;
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 16px;
+    }
+    .productivity-scale p {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+    .heart-icon {
+      font-size: 18px;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+    /* Main Content Sections */
+    .main-content {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      flex: 1;
+      min-width: 280px;
+      max-width: 300px;
+    }
+    .section h2 {
+      margin-top: 0;
+    }
+    /* Task List Styles */
+    .task-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .task {
+      display: flex;
+      align-items: center;
+      background: #f9f9f9;
+      margin: 10px 0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border-left: 6px solid;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    .task input[type="checkbox"] {
+      margin-right: 10px;
+    }
+    /* Professional Task Priorities */
+    .high-priority { border-left-color: #e84545; }
+    .medium-priority { border-left-color: #f9ed69; }
+    .low-priority { border-left-color: #4ecca3; }
+    /* Personal Tasks */
+    .personal { border-left-color: #9b59b6; }
+    /* Calendar Styles */
+    .calendar-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .calendar-item {
+      background: #f9f9f9;
+      margin: 10px 0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      border-left: 6px solid #3498db;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    /* Email List Styles */
+    .email-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .email-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f9f9f9;
+      margin: 10px 0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 15px;
+      line-height: 1.4;
+    }
+    .reply-btn {
+      padding: 6px 12px;
+      font-size: 14px;
+      background-color: #0984e3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    /* Actions */
+    .actions {
+      text-align: center;
+      margin-top: 15px;
+    }
+    .actions button {
+      margin: 5px;
+      padding: 8px 16px;
+      background-color: #2b2e4a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 15px;
+    }
+    /* Chat Box Styles */
+    .chat-box {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-top: 20px;
+      padding: 20px;
+    }
+    .chat-header {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 12px;
+      font-size: 17px;
+    }
+    .chat-messages {
+      display: flex;
+      flex-direction: column;
+      height: 200px;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 12px;
+      background: #f9f9f9;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+    .chat-message {
+      margin: 8px 0;
+      padding: 10px 14px;
+      border-radius: 20px;
+      display: inline-block;
+      max-width: 80%;
+    }
+    .chat-message.ai {
+      background-color: #dff9fb;
+      align-self: flex-start;
+    }
+    .chat-message.user {
+      background-color: #f1f1f1;
+      align-self: flex-end;
+    }
+    .chat-input {
+      display: flex;
+      gap: 10px;
+    }
+    .chat-input input {
+      flex: 1;
+      padding: 10px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .chat-input button {
+      padding: 10px 14px;
+      font-size: 15px;
+      background-color: #2b2e4a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(43, 46, 74, 0.4);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+    .modal {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      width: 300px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .modal input {
+      padding: 10px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .modal-actions button {
+      padding: 8px 14px;
+      font-size: 14px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background-color: #2b2e4a;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>WorkPilot Prototype</h1>
+    <!-- AI Banner with Summary -->
+    <div class="ai-banner" id="aiBanner"></div>
 
+    <!-- Mood Selector -->
+    <div class="mood-control">
+      How are you feeling?
+      <span class="emoji" data-value="happy">😀</span>
+      <span class="emoji" data-value="neutral">😐</span>
+      <span class="emoji" data-value="tired">😴</span>
+      <span class="emoji" data-value="stressed">😟</span>
+      <button id="updateMoodBtn">Update Mood</button>
+    </div>
+
+    <!-- Productivity Overview -->
+    <div class="productivity-scale">
+      <h2>Productivity Overview</h2>
+      <p>Sleep Hours: <strong>7</strong></p>
+      <p>Rested Level: <strong>80%</strong></p>
+      <p>Overall Productivity: <strong>High</strong></p>
+      <p>Heart Rate: <span class="heart-icon">❤️</span><strong id="heartRate">70 bpm</strong></p>
+    </div>
+
+    <div class="main-content">
+      <!-- Tasks Section -->
+      <div class="section tasks-section">
+        <h2>Your Tasks</h2>
+        <ul class="task-list" id="taskList"></ul>
+        <div class="actions">
+          <button id="reshuffleBtn">Reshuffle Workload</button>
+          <button id="clearCompletedBtn">Clear Completed</button>
+          <button id="refillTasksBtn">Refill Tasks</button>
+        </div>
+      </div>
+
+      <!-- Calendar Section -->
+      <div class="section calendar-section">
+        <h2>Today's Calendar</h2>
+        <ul class="calendar-list" id="calendarList"></ul>
+        <div class="actions">
+          <button id="addMeetingBtn">Add Meeting</button>
+          <button id="resetCalendarBtn">Reset Calendar</button>
+        </div>
+      </div>
+
+      <!-- Emails Section -->
+      <div class="section emails-section">
+        <h2>Emails</h2>
+        <ul class="email-list" id="emailList"></ul>
+      </div>
+    </div>
+
+    <!-- AI Chat Box -->
+    <div class="chat-box">
+      <div class="chat-header">AI Chat</div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="chat-message ai">Hello! How can I help you today?</div>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="chatInput" placeholder="Type your message...">
+        <button id="sendChatBtn">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Adding Meeting -->
+  <div id="meetingModal" class="modal-overlay" style="display: none;">
+    <div class="modal">
+      <h3>Add New Meeting</h3>
+      <input type="text" id="meetingTime" placeholder="Time (e.g., 3:00 PM)">
+      <input type="text" id="meetingTitle" placeholder="Meeting Title">
+      <div class="modal-actions">
+        <button id="saveMeetingBtn">Save</button>
+        <button id="cancelMeetingBtn">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Data stores
+      const originalTasks = [
+        { text: 'Finish project report ASAP (Work)', cls: 'high-priority' },
+        { text: 'Email follow-up with client (Work)', cls: 'medium-priority' },
+        { text: 'Plan team outing (Personal)', cls: 'personal' },
+        { text: 'Prepare for design review meeting today (Work)', cls: 'high-priority' },
+        { text: 'Organize desk and files (Work)', cls: 'low-priority' },
+        { text: 'Update website content soon (Work)', cls: 'medium-priority' },
+        { text: 'Call Mom (Personal)', cls: 'personal' },
+        { text: 'Buy groceries (Personal)', cls: 'personal' }
+      ];
+      let currentTasks = [];
+
+      const originalCalendar = [
+        { time: '9:00 AM', title: 'Team Standup' },
+        { time: '11:00 AM', title: 'Client Meeting' },
+        { time: '2:00 PM', title: 'Design Review Meeting' },
+        { time: '4:00 PM', title: 'One-on-One with Manager' }
+      ];
+      let currentCalendar = [];
+
+      const emails = [
+        'Project status update requested.',
+        'HR: Reminder about policy changes.',
+        'Invitation: Team lunch on Friday.'
+      ];
+
+      // Element refs
+      const taskListEl = document.getElementById('taskList');
+      const calendarListEl = document.getElementById('calendarList');
+      const emailListEl = document.getElementById('emailList');
+      const aiBannerEl = document.getElementById('aiBanner');
+      const emojis = document.querySelectorAll('.emoji');
+      let selectedMood = null;
+
+      // Helpers
+      function renderTasks() {
+        taskListEl.innerHTML = '';
+        currentTasks.forEach((task, idx) => {
+          const li = document.createElement('li');
+          li.className = `task ${task.cls}`;
+          const cb = document.createElement('input');
+          cb.type = 'checkbox';
+          cb.dataset.index = idx;
+          const span = document.createElement('span');
+          span.textContent = task.text;
+          li.append(cb, span);
+          taskListEl.append(li);
+        });
+      }
+
+      function renderCalendar() {
+        calendarListEl.innerHTML = '';
+        currentCalendar.forEach(entry => {
+          const li = document.createElement('li');
+          li.className = 'calendar-item';
+          li.textContent = `${entry.time} - ${entry.title}`;
+          calendarListEl.append(li);
+        });
+        updateBanner();
+      }
+
+      function renderEmails() {
+        emailListEl.innerHTML = '';
+        emails.forEach((email, idx) => {
+          const li = document.createElement('li');
+          li.className = 'email-item';
+          const span = document.createElement('span');
+          span.textContent = email;
+          const btn = document.createElement('button');
+          btn.textContent = 'Reply';
+          btn.className = 'reply-btn';
+          btn.dataset.index = idx;
+          li.append(span, btn);
+          emailListEl.append(li);
+        });
+      }
+
+      function updateBanner() {
+        const meetingCount = currentCalendar.length;
+        const emailCount = emails.length;
+        const moodText = selectedMood ? ` | Mood: ${selectedMood}` : '';
+        aiBannerEl.textContent =
+          `I've scanned your calendar and emails: You have ${meetingCount} meetings today and ${emailCount} emails waiting.${moodText}`;
+      }
+
+      function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+      }
+
+      // Initialize
+      function init() {
+        currentTasks = originalTasks.map(t => ({ ...t }));
+        currentCalendar = originalCalendar.map(e => ({ ...e }));
+        renderTasks();
+        renderCalendar();
+        renderEmails();
+      }
+
+      // Mood selector
+      emojis.forEach(emo => {
+        emo.addEventListener('click', () => {
+          emojis.forEach(e => e.classList.remove('selected'));
+          emo.classList.add('selected');
+          selectedMood = emo.dataset.value;
+        });
+      });
+      document.getElementById('updateMoodBtn').addEventListener('click', () => {
+        if (!selectedMood) return alert('Please select a mood first!');
+        updateBanner();
+      });
+
+      // Task buttons
+      document.getElementById('reshuffleBtn').addEventListener('click', () => {
+        shuffleArray(currentTasks);
+        renderTasks();
+      });
+      document.getElementById('clearCompletedBtn').addEventListener('click', () => {
+        currentTasks = currentTasks.filter((_, i) => {
+          const cb = taskListEl.querySelector(`input[data-index="${i}"]`);
+          return !cb.checked;
+        });
+        renderTasks();
+      });
+      document.getElementById('refillTasksBtn').addEventListener('click', () => {
+        currentTasks = originalTasks.map(t => ({ ...t }));
+        renderTasks();
+      });
+
+      // Calendar buttons
+      document.getElementById('addMeetingBtn').addEventListener('click', () => {
+        document.getElementById('meetingModal').style.display = 'flex';
+      });
+      document.getElementById('cancelMeetingBtn').addEventListener('click', () => {
+        document.getElementById('meetingModal').style.display = 'none';
+        document.getElementById('meetingTime').value = '';
+        document.getElementById('meetingTitle').value = '';
+      });
+      document.getElementById('saveMeetingBtn').addEventListener('click', () => {
+        const time = document.getElementById('meetingTime').value.trim();
+        const title = document.getElementById('meetingTitle').value.trim();
+        if (!time || !title) {
+          alert('Please fill in both fields.');
+          return;
+        }
+        currentCalendar.push({ time, title });
+        renderCalendar();
+        document.getElementById('meetingModal').style.display = 'none';
+        document.getElementById('meetingTime').value = '';
+        document.getElementById('meetingTitle').value = '';
+      });
+      document.getElementById('resetCalendarBtn').addEventListener('click', () => {
+        currentCalendar = originalCalendar.map(e => ({ ...e }));
+        renderCalendar();
+      });
+
+      // Email reply button
+      emailListEl.addEventListener('click', e => {
+        if (e.target.classList.contains('reply-btn')) {
+          const idx = e.target.dataset.index;
+          const email = emails[idx];
+          appendMessage(`Draft a response to: "${email}"`, 'user');
+          aiRespond(`Draft a response to: "${email}"`);
+        }
+      });
+
+      // Chat simulation
+      const chatMessagesEl = document.getElementById('chatMessages');
+      function appendMessage(text, cls) {
+        const div = document.createElement('div');
+        div.className = `chat-message ${cls}`;
+        div.textContent = text;
+        chatMessagesEl.append(div);
+        chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+      }
+      async function aiRespond(userText) {
+        appendMessage('Thinking...', 'ai');
+        const context = {
+          mood: selectedMood,
+          sleep: '7',
+          rested: '80%',
+          heartRate: document.getElementById('heartRate').textContent,
+          calendar: currentCalendar,
+          tasks: currentTasks
+        };
+        try {
+          const res = await fetch('http://localhost:3001/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: userText, context })
+          });
+          const data = await res.json();
+          const reply = data.reply || 'Hmm, I didn’t get that.';
+          const aiMsgs = chatMessagesEl.querySelectorAll('.chat-message.ai');
+          if (aiMsgs.length) {
+            aiMsgs[aiMsgs.length - 1].textContent = reply;
+          } else {
+            appendMessage(reply, 'ai');
+          }
+        } catch (err) {
+          console.error(err);
+          appendMessage("Sorry, I couldn’t reach the AI.", 'ai');
+        }
+      }
+      document.getElementById('sendChatBtn').addEventListener('click', () => {
+        const inp = document.getElementById('chatInput');
+        const txt = inp.value.trim();
+        if (!txt) return;
+        appendMessage(txt, 'user');
+        inp.value = '';
+        aiRespond(txt);
+      });
+      document.getElementById('chatInput').addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('sendChatBtn').click();
+      });
+
+      // Live heart rate
+      function updateHeartRate() {
+        const heartRateEl = document.getElementById('heartRate');
+        let base = 70;
+        setInterval(() => {
+          const fluctuation = Math.floor(Math.random() * 7) - 3;
+          const bpm = base + fluctuation;
+          heartRateEl.textContent = `${bpm} bpm`;
+        }, 1000);
+      }
+      updateHeartRate();
+      init();
+    });
+  </script>
+</body>
+</html>
