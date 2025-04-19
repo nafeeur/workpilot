@@ -10,7 +10,7 @@ const port = 3001;
 app.use(cors());
 app.use(bodyParser.json());
 
-const OPENAI_API_KEY = ''; // NEVER expose this in front-end
+const OPENAI_API_KEY = process.env.OPENAI_API_KEY; // NEVER expose this in front-end
 
 app.post('/chat', async (req, res) => {
     const { message, context } = req.body;
