@@ -784,35 +784,47 @@
         chatMessagesEl.append(div);
         chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
       }
-      async function aiRespond(userText) {
-        appendMessage('Thinking...', 'ai');
-        const context = {
-          mood:     selectedMood,
-          sleep:    '7',
-          rested:   '80%',
-          feeling:  feelingEl.textContent,
-          events:   currentEvents,
-          tasks:    currentTasks,
-        };
-        try {
-          const res = await fetch('http://localhost:3001/chat', {
-            method: 'POST',
-            headers: {'Content-Type':'application/json'},
-            body: JSON.stringify({message: userText, context})
-          });
-          const data  = await res.json();
-          const reply = data.reply || 'Hmm, I didn’t get that.';
-          const aiMsgs = chatMessagesEl.querySelectorAll('.chat-message.ai');
-          if (aiMsgs.length) {
-            aiMsgs[aiMsgs.length - 1].textContent = reply;
-          } else {
-            appendMessage(reply, 'ai');
-          }
-        } catch (err) {
-          console.error(err);
-          appendMessage("Sorry, I couldn’t reach the AI.", 'ai');
-        }
-      }
+async function aiRespond(userText) {
+  // 1) Show a “thinking” placeholder
+  appendMessage('Thinking...', 'ai');
+
+  // 2) Build whatever context you want to send
+  const context = {
+    mood:     selectedMood,
+    sleep:    '7',
+    rested:   '80%',
+    feeling:  feelingEl.textContent,
+    events:   currentEvents,
+    tasks:    currentTasks,
+  };
+
+  try {
+    // 3) POST to your Vercel function (rewritten to /api/chat)
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message: userText, context })
+    });
+
+    // 4) Parse the JSON reply
+    const data = await res.json();
+    const reply = data.reply || 'Hmm, I didn’t get that.';
+
+    // 5) Replace the last “Thinking…” bubble with the real answer
+    const aiBubbles = chatMessagesEl.querySelectorAll('.chat-message.ai');
+    if (aiBubbles.length) {
+      aiBubbles[aiBubbles.length - 1].textContent = reply;
+    } else {
+      appendMessage(reply, 'ai');
+    }
+
+  } catch (err) {
+    console.error('AI request failed:', err);
+    appendMessage("Sorry, I couldn’t reach the AI.", 'ai');
+  }
+}
+
+
       document.getElementById('sendChatBtn').addEventListener('click', () => {
         const inp = document.getElementById('chatInput');
         const txt = inp.value.trim();
