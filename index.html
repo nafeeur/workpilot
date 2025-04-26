@@ -21,6 +21,7 @@
       text-align: center;
       margin-bottom: 10px;
     }
+
     /* AI Banner */
     .ai-banner {
       background-color: #dff9fb;
@@ -32,7 +33,8 @@
       line-height: 1.5;
       font-size: 16px;
     }
-    /* Mood Selector using Emojis */
+
+    /* Mood Selector */
     .mood-control {
       text-align: center;
       margin-bottom: 20px;
@@ -66,7 +68,8 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    /* Productivity Scale Section */
+
+    /* Productivity Scale */
     .productivity-scale {
       background: #f1f7f9;
       border: 1px solid #cddde4;
@@ -85,46 +88,40 @@
       vertical-align: middle;
       margin-right: 5px;
     }
-    /* Main Content Sections */
+
+    /* Main Layout */
     .main-content {
-  display: grid;
-  grid-template-columns: 1fr;
-  grid-template-rows: auto auto auto;
-  grid-template-areas:
-    "tasks"
-    "emails"
-    "calendar";
-  gap: 20px;
-  justify-items: center;
-}
-
-.section {
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  width: 100%;
-  max-width: 300px;
-}
-
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-areas:
+        "tasks"
+        "calendar"
+        "emails"
+        "chat";
+      gap: 20px;
+      justify-items: center;
+    }
+    .section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 300px;
+    }
     .section h2 {
       margin-top: 0;
     }
-    .tasks-section    { grid-area: tasks; }
-.emails-section   { grid-area: emails; }
-.calendar-section { grid-area: calendar; }
+    .tasks-section    { grid-area: tasks;           max-width: 600px; }
+    .calendar-section { grid-area: calendar;        min-width: 600px; }
+    .emails-section   { grid-area: emails;          max-width: 600px; }
+    .chat-section     { grid-area: chat;            min-width: 650px; }
 
-
-    /* Task List Styles */
-    .tasks-section {
-  width: 100%;
-  max-width: 600px; /* bump this up to whatever you need */
-}
-
+    /* Task List */
     .task-list {
       list-style: none;
-      padding: 0;
       margin: 0;
+      padding: 0;
     }
     .task {
       display: flex;
@@ -140,149 +137,62 @@
     .task input[type="checkbox"] {
       margin-right: 10px;
     }
-    /* Professional Task Priorities */
-    .high-priority { border-left-color: #e84545; }
+    .high-priority   { border-left-color: #e84545; }
     .medium-priority { border-left-color: #f9ed69; }
-    .low-priority { border-left-color: #4ecca3; }
-    /* Personal Tasks */
-    .personal { border-left-color: #9b59b6; }
-    /* Calendar Styles */
+    .low-priority    { border-left-color: #4ecca3; }
+    .personal        { border-left-color: #9b59b6; }
 
-/* Day-view calendar grid */
+    /* Weekly Calendar Styles */
+    .week-calendar {
+      min-width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .week-calendar th,
+    .week-calendar td {
+      border: 1px solid #ccdde4;
+      position: relative;
+      vertical-align: top;
+      height: 60px;
+      padding: 4px;
+    }
+    .week-calendar th {
+      background: #f1f7f9;
+      text-align: center;
+      font-weight: 600;
+    }
+    .event-block {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      right: 4px;
+      padding: 6px;
+      border-radius: 4px;
+      font-size: 13px;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      background: #0984e3;
+      color: #fff;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .event-block:hover {
+      transform: scale(1.02);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    }
+    .event-block.conflict {
+      background: #e84545;
+    }
+    .event-block.suggested {
+      background: transparent;
+      border: 2px dashed #555;
+      color: #2b2e4a;
+    }
 
-.calendar-section {
-min-width: 600px;
-}
-.day-calendar {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  margin-bottom: 10px;
-}
-.day-calendar th,
-.day-calendar td {
-  border: 1px solid #ccdde4;
-  padding: 8px;
-  vertical-align: top;
-  height: 40px;
-}
-.day-calendar tr:nth-child(odd) {
-  background: #f9f9f9;
-}
-.calendar-event {
-  background: #0984e3;
-  color: white;
-  padding: 2px 6px;
-  border-radius: 3px;
-  font-size: 15px;
-  display: inline-block;
-  margin-bottom: 4px;
-  max-width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* Emails section wrapper */
-.emails-section {
-  width: 100%;
-  max-width: 600px;
-  background: #f1f7f9;
-  border: 1px solid #cddde4;
-  border-radius: 8px;
-  padding: 16px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-}
-
-/* Header with inbox title & count badge */
-.emails-section .email-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #cddde4;
-  margin-bottom: 16px;
-  font-size: 18px;
-}
-.emails-section .email-header .email-count {
-  background: #0984e3;
-  color: white;
-  border-radius: 12px;
-  padding: 4px 10px;
-  font-size: 14px;
-}
-
-/* Make the list scrollable if long */
-.email-list {
-  max-height: 300px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-/* Individual message cards */
-.email-item {
-  background: white;
-  padding: 14px 18px;
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-  display: flex;
-  flex-direction: column;
-  transition: background-color 0.2s, box-shadow 0.2s;
-}
-.email-item:hover {
-  background-color: #f5fcff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
-}
-
-/* Header row inside each message */
-.email-item-header {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 8px;
-}
-.email-sender {
-  font-weight: 600;
-}
-.email-time {
-  font-size: 13px;
-  color: #777;
-}
-
-/* Subject & snippet */
-.email-subject {
-  margin: 6px 0;
-  font-size: 15px;
-  font-weight: 500;
-}
-.email-snippet {
-  font-size: 14px;
-  color: #555;
-  line-height: 1.4;
-}
-
-/* Reply button aligned to the right */
-.reply-btn {
-  align-self: flex-end;
-  margin-top: 10px;
-  padding: 6px 14px;
-  font-size: 14px;
-  background-color: #0984e3;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-.reply-btn:hover {
-  background-color: #076bb5;
-}
-
-    /* Actions */
+    /* Buttons */
     .actions {
       text-align: center;
-      margin-top: 15px;
+      margin-top: 10px;
     }
     .actions button {
       margin: 5px;
@@ -293,13 +203,180 @@ min-width: 600px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 15px;
+      transition: background-color 0.2s;
     }
-    /* Chat Box Styles */
+    .actions button:hover {
+      background-color: #1e212f;
+    }
+
+    /* Modal Styles */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.3);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      animation: fadeIn 0.3s ease;
+    }
+    .modal {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      width: 320px;
+      max-width: 90%;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      animation: slideDown 0.3s ease;
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .modal-header h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: #777;
+      transition: color 0.2s;
+    }
+    .close-btn:hover {
+      color: #2b2e4a;
+    }
+    .modal select,
+    .modal input[type="time"],
+    .modal input[type="text"] {
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 100%;
+    }
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+    .form-row label {
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 8px;
+    }
+    .modal-actions button {
+      padding: 8px 14px;
+      font-size: 14px;
+      background-color: #2b2e4a;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .modal-actions button:hover {
+      background-color: #1e212f;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; } to { opacity: 1; }
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-20px); opacity: 0; }
+      to   { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Emails */
+    .emails-section {
+      background: #f1f7f9;
+      border: 1px solid #cddde4;
+      border-radius: 8px;
+      padding: 16px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+    .emails-section .email-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #cddde4;
+      margin-bottom: 16px;
+      font-size: 18px;
+    }
+    .emails-section .email-count {
+      background: #0984e3;
+      color: white;
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-size: 14px;
+    }
+    .email-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .email-item {
+      background: white;
+      padding: 14px 18px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.2s, box-shadow 0.2s;
+    }
+    .email-item:hover {
+      background-color: #f5fcff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .email-item-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .email-sender { font-weight: 600; }
+    .email-time   { font-size: 13px; color: #777; }
+    .email-subject { margin: 6px 0; font-size: 15px; font-weight: 500; }
+    .email-snippet { font-size: 14px; color: #555; line-height: 1.4; }
+    .reply-btn {
+      align-self: flex-end;
+      margin-top: 10px;
+      padding: 6px 14px;
+      font-size: 14px;
+      background-color: #0984e3;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    .reply-btn:hover {
+      background-color: #076bb5;
+    }
+
+    /* Chat Box */
     .chat-box {
       background: white;
       border-radius: 8px;
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      margin-top: 20px;
       padding: 20px;
       min-width: 650px;
     }
@@ -328,14 +405,8 @@ min-width: 600px;
       display: inline-block;
       max-width: 80%;
     }
-    .chat-message.ai {
-      background-color: #dff9fb;
-      align-self: flex-start;
-    }
-    .chat-message.user {
-      background-color: #f1f1f1;
-      align-self: flex-end;
-    }
+    .chat-message.ai   { background-color: #dff9fb; align-self: flex-start; }
+    .chat-message.user { background-color: #f1f1f1; align-self: flex-end; }
     .chat-input {
       display: flex;
       gap: 10px;
@@ -356,55 +427,13 @@ min-width: 600px;
       border-radius: 8px;
       cursor: pointer;
     }
-    /* Modal */
-    .modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(43, 46, 74, 0.4);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
-    }
-    .modal {
-      background: white;
-      padding: 24px;
-      border-radius: 12px;
-      width: 300px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-    .modal input {
-      padding: 10px;
-      font-size: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-    }
-    .modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 10px;
-    }
-    .modal-actions button {
-      padding: 8px 14px;
-      font-size: 14px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      background-color: #2b2e4a;
-      color: white;
-    }
   </style>
 </head>
 <body>
   <div class="container">
     <h1>WorkPilot Prototype</h1>
-    <!-- AI Banner with Summary -->
+
+    <!-- AI Banner -->
     <div class="ai-banner" id="aiBanner"></div>
 
     <!-- Mood Selector -->
@@ -438,21 +467,27 @@ min-width: 600px;
         </div>
       </div>
 
-      <!-- Calendar Section -->
+      <!-- Weekly Calendar Section -->
       <div class="section calendar-section">
-        <h2>Today's Calendar</h2>
-        <table id="dayCalendar" class="day-calendar">
+        <h2>This Week's Calendar</h2>
+        <table id="weekCalendar" class="week-calendar">
           <thead>
-            <tr><th>Time</th><th>Event</th></tr>
+            <tr>
+              <th>Time</th>
+              <th>Mon</th>
+              <th>Tue</th>
+              <th>Wed</th>
+              <th>Thu</th>
+              <th>Fri</th>
+            </tr>
           </thead>
-          <tbody id="calendarBody"></tbody>
+          <tbody id="weekCalendarBody"></tbody>
         </table>
         <div class="actions">
-          <button id="addMeetingBtn">Add Meeting</button>
+          <button id="addEventBtn">Add Event</button>
           <button id="resetCalendarBtn">Reset Calendar</button>
         </div>
       </div>
-      
 
       <!-- Emails Section -->
       <div class="section emails-section">
@@ -462,37 +497,49 @@ min-width: 600px;
         </div>
         <ul class="email-list" id="emailList"></ul>
       </div>
-      
 
-    <!-- AI Chat Box -->
-    <div class="chat-box">
-      <div class="chat-header">AI Chat</div>
-      <div class="chat-messages" id="chatMessages">
-        <div class="chat-message ai">Hello! How can I help you today?</div>
-      </div>
-      <div class="chat-input">
-        <input type="text" id="chatInput" placeholder="Type your message...">
-        <button id="sendChatBtn">Send</button>
+      <!-- Chat Box -->
+      <div class="section chat-section chat-box">
+        <div class="chat-header">AI Chat</div>
+        <div class="chat-messages" id="chatMessages">
+          <div class="chat-message ai">Hello! How can I help you today?</div>
+        </div>
+        <div class="chat-input">
+          <input type="text" id="chatInput" placeholder="Type your message...">
+          <button id="sendChatBtn">Send</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal for Adding Meeting -->
-  <div id="meetingModal" class="modal-overlay" style="display: none;">
+  <!-- Add Event Modal -->
+  <div id="eventModal" class="modal-overlay">
     <div class="modal">
-      <h3>Add New Meeting</h3>
-      <input type="text" id="meetingTime" placeholder="Time (e.g., 3:00 PM)">
-      <input type="text" id="meetingTitle" placeholder="Meeting Title">
+      <div class="modal-header">
+        <h3>Add Event</h3>
+        <button class="close-btn" id="cancelEventBtn">&times;</button>
+      </div>
+      <select id="eventDay">
+        <option value="" disabled selected>Day</option>
+        <option>Mon</option><option>Tue</option>
+        <option>Wed</option><option>Thu</option>
+        <option>Fri</option>
+      </select>
+      <input type="time" id="eventTime" step="900"/>
+      <input type="text" id="eventTitle" placeholder="Event Title"/>
+      <div class="form-row">
+        <label><input type="checkbox" id="eventConflict"/> Conflict</label>
+        <label><input type="checkbox" id="eventSuggested"/> Suggested</label>
+      </div>
       <div class="modal-actions">
-        <button id="saveMeetingBtn">Save</button>
-        <button id="cancelMeetingBtn">Cancel</button>
+        <button id="saveEventBtn">Save</button>
       </div>
     </div>
   </div>
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Data stores
+      /* --- Tasks & Emails Data --- */
       const originalTasks = [
         { text: 'Finish project report ASAP (Work)', cls: 'high-priority' },
         { text: 'Email follow-up with client (Work)', cls: 'medium-priority' },
@@ -504,15 +551,7 @@ min-width: 600px;
         { text: 'Buy groceries (Personal)', cls: 'personal' }
       ];
       let currentTasks = [];
-    
-      const originalCalendar = [
-        { time: '9:00 AM', title: 'Team Standup' },
-        { time: '11:00 AM', title: 'Client Meeting' },
-        { time: '2:00 PM', title: 'Design Review Meeting' },
-        { time: '4:00 PM', title: 'One-on-One with Manager' }
-      ];
-      let currentCalendar = [];
-    
+
       const emails = [
         {
           sender: 'Client A',
@@ -533,17 +572,27 @@ min-width: 600px;
           snippet:'Let us know if you can make it to the team lunch this Friday.'
         }
       ];
-    
-      // Element refs
-      const taskListEl     = document.getElementById('taskList');
-      const calendarBodyEl = document.getElementById('calendarBody');
-      const emailListEl    = document.getElementById('emailList');
-      const aiBannerEl     = document.getElementById('aiBanner');
-      const feelingEl      = document.getElementById('feeling');
-      const emojis         = document.querySelectorAll('.emoji');
-      let selectedMood     = null;
-    
-      // Helpers
+
+      /* --- Weekly Calendar Data --- */
+      const originalEvents = [
+        { day:'Mon', time:'11:00 AM', title:'Team Meeting' },
+        { day:'Tue', time:'11:00 AM', title:'Client Call', conflict:true },
+        { day:'Wed', time:'1:00 PM', title:'Project Review' },
+        { day:'Thu', time:'4:00 PM', title:'Break', suggested:true }
+      ];
+      let currentEvents = [];
+
+      /* --- Element Refs --- */
+      const taskListEl  = document.getElementById('taskList');
+      const emailListEl = document.getElementById('emailList');
+      const aiBannerEl  = document.getElementById('aiBanner');
+      const feelingEl   = document.getElementById('feeling');
+      const emojis      = document.querySelectorAll('.emoji');
+
+      const calendarBody = document.getElementById('weekCalendarBody');
+      const modal        = document.getElementById('eventModal');
+
+      /* --- Render Helpers --- */
       function renderTasks() {
         taskListEl.innerHTML = '';
         currentTasks.forEach((task, idx) => {
@@ -558,14 +607,12 @@ min-width: 600px;
           taskListEl.append(li);
         });
       }
-    
+
       function renderEmails() {
         emailListEl.innerHTML = '';
         emails.forEach((e, idx) => {
           const li = document.createElement('li');
           li.className = 'email-item';
-    
-          // header (sender + time)
           const hdr = document.createElement('div');
           hdr.className = 'email-item-header';
           const sender = document.createElement('span');
@@ -575,85 +622,121 @@ min-width: 600px;
           time.className = 'email-time';
           time.textContent = e.time;
           hdr.append(sender, time);
-    
-          // subject & snippet
           const subj = document.createElement('div');
           subj.className = 'email-subject';
           subj.textContent = e.subject;
           const snip = document.createElement('div');
           snip.className = 'email-snippet';
           snip.textContent = e.snippet;
-    
-          // reply button
-          const btn = document.createElement('button');
+          const btn  = document.createElement('button');
           btn.className = 'reply-btn';
           btn.textContent = 'Reply';
           btn.dataset.index = idx;
-    
           li.append(hdr, subj, snip, btn);
           emailListEl.append(li);
         });
       }
-    
+
       function updateBanner() {
-        const meetingCount = currentCalendar.length;
+        const meetingCount = currentEvents.length;
         const emailCount   = emails.length;
         const moodText     = selectedMood ? ` | Mood: ${selectedMood}` : '';
         aiBannerEl.textContent =
-          `I've scanned your calendar and emails: You have ${meetingCount} meetings today and ${emailCount} emails waiting.${moodText}`;
+          `I've scanned your calendar and emails: You have ${meetingCount} meetings this week and ${emailCount} emails waiting.${moodText}`;
       }
-    
-      // New: day-view calendar (8 AM–6 PM)
-      function renderCalendarDay() {
-        calendarBodyEl.innerHTML = '';
-        for (let h = 8; h <= 18; h++) {
-          const tr = document.createElement('tr');
+
+      /* --- Weekly Calendar Render --- */
+      function parseHour(timeStr) {
+        let [t, ampm] = timeStr.split(' ');
+        let [hr] = t.split(':').map(Number);
+        if (ampm === 'PM' && hr < 12) hr += 12;
+        if (ampm === 'AM' && hr === 12) hr = 0;
+        return hr;
+      }
+
+      function renderWeeklyCalendar() {
+        calendarBody.innerHTML = '';
+        for (let h = 9; h <= 17; h++) {
+          const tr     = document.createElement('tr');
           const tdTime = document.createElement('td');
           const hour12 = (h % 12) === 0 ? 12 : h % 12;
-          tdTime.textContent = hour12 + ':00 ' + (h < 12 ? 'AM' : 'PM');
-    
-          const tdEvt = document.createElement('td');
-          currentCalendar
-            .filter(ev => {
-              const [time, ampm] = ev.time.split(' ');
-              let [hr, min] = time.split(':').map(Number);
-              if (ampm === 'PM' && hr < 12) hr += 12;
-              if (ampm === 'AM' && hr === 12) hr = 0;
-              return hr === h;
-            })
-            .forEach(ev => {
-              const div = document.createElement('div');
-              div.className = 'calendar-event';
-              div.textContent = ev.title;
-              tdEvt.append(div);
-            });
-    
-          tr.append(tdTime, tdEvt);
-          calendarBodyEl.append(tr);
+          tdTime.textContent = hour12 + ':00';
+          tr.append(tdTime);
+
+          ['Mon','Tue','Wed','Thu','Fri'].forEach(day => {
+            const td = document.createElement('td');
+            currentEvents
+              .filter(ev => ev.day === day && parseHour(ev.time) === h)
+              .forEach(ev => {
+                const div = document.createElement('div');
+                div.className = 'event-block';
+                if (ev.conflict)  div.classList.add('conflict');
+                if (ev.suggested) div.classList.add('suggested');
+                div.title       = ev.time + ' – ' + ev.title;
+                div.textContent = ev.title;
+                td.append(div);
+              });
+            tr.append(td);
+          });
+
+          calendarBody.append(tr);
         }
         updateBanner();
       }
-    
-      // Utils
+
+      /* --- Modal & Event Handlers --- */
+      document.getElementById('addEventBtn')
+        .addEventListener('click', () => modal.style.display = 'flex');
+      document.getElementById('cancelEventBtn')
+        .addEventListener('click', closeModal);
+      modal.addEventListener('click', e => {
+        if (e.target === modal) closeModal();
+      });
+      function closeModal() {
+        modal.style.display = 'none';
+        ['eventDay','eventTime','eventTitle'].forEach(id =>
+          document.getElementById(id).value = ''
+        );
+        document.getElementById('eventConflict').checked   = false;
+        document.getElementById('eventSuggested').checked = false;
+      }
+
+      document.getElementById('saveEventBtn')
+        .addEventListener('click', () => {
+          const day       = document.getElementById('eventDay').value;
+          const timeInput = document.getElementById('eventTime').value;
+          const title     = document.getElementById('eventTitle').value.trim();
+          const conflict  = document.getElementById('eventConflict').checked;
+          const suggested = document.getElementById('eventSuggested').checked;
+
+          if (!day || !timeInput || !title) {
+            return alert('Please select day, time, and title.');
+          }
+          let [h, m] = timeInput.split(':').map(n => parseInt(n,10));
+          const suffix = h >= 12 ? 'PM' : 'AM';
+          const hour12 = ((h + 11) % 12) + 1;
+          const displayTime = hour12 + ':' + (m<10?'0'+m:m) + ' ' + suffix;
+
+          currentEvents.push({ day, time: displayTime, title, conflict, suggested });
+          renderWeeklyCalendar();
+          closeModal();
+        });
+
+      document.getElementById('resetCalendarBtn')
+        .addEventListener('click', () => {
+          currentEvents = originalEvents.map(e => ({ ...e }));
+          renderWeeklyCalendar();
+        });
+
+      /* --- Other UI Bindings --- */
       function shuffleArray(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [arr[i], arr[j]] = [arr[j], arr[i]];
         }
       }
-    
-      // Initialization
-      function init() {
-        currentTasks    = originalTasks.map(t => ({ ...t }));
-        currentCalendar = originalCalendar.map(e => ({ ...e }));
-        renderTasks();
-        renderCalendarDay();
-        renderEmails();
-      }
-    
-      // --- Event Bindings ---
-    
-      // Mood selector → updates banner + “feeling” text
+
+      let selectedMood = null;
       emojis.forEach(emo => {
         emo.addEventListener('click', () => {
           emojis.forEach(e => e.classList.remove('selected'));
@@ -664,12 +747,10 @@ min-width: 600px;
       document.getElementById('updateMoodBtn').addEventListener('click', () => {
         if (!selectedMood) return alert('Please select a mood first!');
         updateBanner();
-        // set the Feeling display
         feelingEl.textContent =
           selectedMood.charAt(0).toUpperCase() + selectedMood.slice(1);
       });
-    
-      // Task buttons
+
       document.getElementById('reshuffleBtn').addEventListener('click', () => {
         shuffleArray(currentTasks);
         renderTasks();
@@ -685,35 +766,7 @@ min-width: 600px;
         currentTasks = originalTasks.map(t => ({ ...t }));
         renderTasks();
       });
-    
-      // Calendar buttons
-      document.getElementById('addMeetingBtn').addEventListener('click', () => {
-        document.getElementById('meetingModal').style.display = 'flex';
-      });
-      document.getElementById('cancelMeetingBtn').addEventListener('click', () => {
-        document.getElementById('meetingModal').style.display = 'none';
-        document.getElementById('meetingTime').value = '';
-        document.getElementById('meetingTitle').value = '';
-      });
-      document.getElementById('saveMeetingBtn').addEventListener('click', () => {
-        const time  = document.getElementById('meetingTime').value.trim();
-        const title = document.getElementById('meetingTitle').value.trim();
-        if (!time || !title) {
-          alert('Please fill in both fields.');
-          return;
-        }
-        currentCalendar.push({ time, title });
-        renderCalendarDay();
-        document.getElementById('meetingModal').style.display = 'none';
-        document.getElementById('meetingTime').value = '';
-        document.getElementById('meetingTitle').value = '';
-      });
-      document.getElementById('resetCalendarBtn').addEventListener('click', () => {
-        currentCalendar = originalCalendar.map(e => ({ ...e }));
-        renderCalendarDay();
-      });
-    
-      // Email reply
+
       emailListEl.addEventListener('click', e => {
         if (e.target.classList.contains('reply-btn')) {
           const idx   = e.target.dataset.index;
@@ -722,8 +775,7 @@ min-width: 600px;
           aiRespond(`Draft a response to: "${email.subject}"`);
         }
       });
-    
-      // Chat simulation
+
       const chatMessagesEl = document.getElementById('chatMessages');
       function appendMessage(text, cls) {
         const div = document.createElement('div');
@@ -735,18 +787,18 @@ min-width: 600px;
       async function aiRespond(userText) {
         appendMessage('Thinking...', 'ai');
         const context = {
-          mood: selectedMood,
-          sleep: '7',
-          rested: '80%',
-          feeling: feelingEl.textContent,
-          calendar: currentCalendar,
-          tasks: currentTasks
+          mood:     selectedMood,
+          sleep:    '7',
+          rested:   '80%',
+          feeling:  feelingEl.textContent,
+          events:   currentEvents,
+          tasks:    currentTasks,
         };
         try {
           const res = await fetch('http://localhost:3001/chat', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: userText, context })
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({message: userText, context})
           });
           const data  = await res.json();
           const reply = data.reply || 'Hmm, I didn’t get that.';
@@ -772,11 +824,17 @@ min-width: 600px;
       document.getElementById('chatInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') document.getElementById('sendChatBtn').click();
       });
-    
-      // Fire it up
+
+      /* --- Initialize Everything --- */
+      function init() {
+        currentTasks  = originalTasks.map(t => ({...t}));
+        currentEvents = originalEvents.map(e => ({...e}));
+        renderTasks();
+        renderEmails();
+        renderWeeklyCalendar();
+      }
       init();
     });
-    </script>
-    
+  </script>
 </body>
 </html>
