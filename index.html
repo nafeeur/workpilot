@@ -148,25 +148,40 @@
     .personal { border-left-color: #9b59b6; }
     /* Calendar Styles */
 
-    .calendar-section {
-  /* existing styles… */
-  max-width: 850px;   /* instead of 300px */
-  width: 100%;
+/* Day-view calendar grid */
+
+.calendar-section {
+min-width: 600px;
 }
-    .calendar-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .calendar-item {
-      background: #f9f9f9;
-      margin: 10px 0;
-      padding: 12px 16px;
-      border-radius: 8px;
-      border-left: 6px solid #3498db;
-      font-size: 15px;
-      line-height: 1.4;
-    }
+.day-calendar {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-bottom: 10px;
+}
+.day-calendar th,
+.day-calendar td {
+  border: 1px solid #ccdde4;
+  padding: 8px;
+  vertical-align: top;
+  height: 40px;
+}
+.day-calendar tr:nth-child(odd) {
+  background: #f9f9f9;
+}
+.calendar-event {
+  background: #0984e3;
+  color: white;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 15px;
+  display: inline-block;
+  margin-bottom: 4px;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* Emails section wrapper */
 .emails-section {
@@ -426,12 +441,18 @@
       <!-- Calendar Section -->
       <div class="section calendar-section">
         <h2>Today's Calendar</h2>
-        <ul class="calendar-list" id="calendarList"></ul>
+        <table id="dayCalendar" class="day-calendar">
+          <thead>
+            <tr><th>Time</th><th>Event</th></tr>
+          </thead>
+          <tbody id="calendarBody"></tbody>
+        </table>
         <div class="actions">
           <button id="addMeetingBtn">Add Meeting</button>
           <button id="resetCalendarBtn">Reset Calendar</button>
         </div>
       </div>
+      
 
       <!-- Emails Section -->
       <div class="section emails-section">
@@ -483,7 +504,7 @@
         { text: 'Buy groceries (Personal)', cls: 'personal' }
       ];
       let currentTasks = [];
-
+    
       const originalCalendar = [
         { time: '9:00 AM', title: 'Team Standup' },
         { time: '11:00 AM', title: 'Client Meeting' },
@@ -491,36 +512,37 @@
         { time: '4:00 PM', title: 'One-on-One with Manager' }
       ];
       let currentCalendar = [];
-
+    
       const emails = [
-  {
-    sender: 'Client A',
-    time:   '9:15 AM',
-    subject:'Project status update requested',
-    snippet:'Could you please send over the latest project report?'
-  },
-  {
-    sender: 'HR Department',
-    time:   '8:45 AM',
-    subject:'Reminder about policy changes',
-    snippet:'Please review the updated company policies by EOD.'
-  },
-  {
-    sender: 'Team Lead',
-    time:   'Yesterday',
-    subject:'Invitation: Team lunch on Friday',
-    snippet:'Let us know if you can make it to the team lunch this Friday.'
-  }
-];
-
+        {
+          sender: 'Client A',
+          time:   '9:15 AM',
+          subject:'Project status update requested',
+          snippet:'Could you please send over the latest project report?'
+        },
+        {
+          sender: 'HR Department',
+          time:   '8:45 AM',
+          subject:'Reminder about policy changes',
+          snippet:'Please review the updated company policies by EOD.'
+        },
+        {
+          sender: 'Team Lead',
+          time:   'Yesterday',
+          subject:'Invitation: Team lunch on Friday',
+          snippet:'Let us know if you can make it to the team lunch this Friday.'
+        }
+      ];
+    
       // Element refs
-      const taskListEl = document.getElementById('taskList');
-      const calendarListEl = document.getElementById('calendarList');
-      const emailListEl = document.getElementById('emailList');
-      const aiBannerEl = document.getElementById('aiBanner');
-      const emojis = document.querySelectorAll('.emoji');
-      let selectedMood = null;
-
+      const taskListEl     = document.getElementById('taskList');
+      const calendarBodyEl = document.getElementById('calendarBody');
+      const emailListEl    = document.getElementById('emailList');
+      const aiBannerEl     = document.getElementById('aiBanner');
+      const feelingEl      = document.getElementById('feeling');
+      const emojis         = document.querySelectorAll('.emoji');
+      let selectedMood     = null;
+    
       // Helpers
       function renderTasks() {
         taskListEl.innerHTML = '';
@@ -536,81 +558,102 @@
           taskListEl.append(li);
         });
       }
-
-      function renderCalendar() {
-        calendarListEl.innerHTML = '';
-        currentCalendar.forEach(entry => {
-          const li = document.createElement('li');
-          li.className = 'calendar-item';
-          li.textContent = `${entry.time} - ${entry.title}`;
-          calendarListEl.append(li);
-        });
-        updateBanner();
-      }
-
+    
       function renderEmails() {
-  const emailListEl = document.getElementById('emailList');
-  emailListEl.innerHTML = '';         // clear old items
-  emails.forEach((e, idx) => {
-    const li = document.createElement('li');
-    li.className = 'email-item';
-
-    // header (sender + time)
-    const hdr = document.createElement('div');
-    hdr.className = 'email-item-header';
-    const sender = document.createElement('span');
-    sender.className = 'email-sender';
-    sender.textContent = e.sender;
-    const time = document.createElement('span');
-    time.className = 'email-time';
-    time.textContent = e.time;
-    hdr.append(sender, time);
-
-    // subject & snippet
-    const subj = document.createElement('div');
-    subj.className = 'email-subject';
-    subj.textContent = e.subject;
-    const snip = document.createElement('div');
-    snip.className = 'email-snippet';
-    snip.textContent = e.snippet;
-
-    // reply button
-    const btn = document.createElement('button');
-    btn.className = 'reply-btn';
-    btn.textContent = 'Reply';
-    btn.dataset.index = idx;
-
-    li.append(hdr, subj, snip, btn);
-    emailListEl.append(li);
-  });
-}
-
-
+        emailListEl.innerHTML = '';
+        emails.forEach((e, idx) => {
+          const li = document.createElement('li');
+          li.className = 'email-item';
+    
+          // header (sender + time)
+          const hdr = document.createElement('div');
+          hdr.className = 'email-item-header';
+          const sender = document.createElement('span');
+          sender.className = 'email-sender';
+          sender.textContent = e.sender;
+          const time = document.createElement('span');
+          time.className = 'email-time';
+          time.textContent = e.time;
+          hdr.append(sender, time);
+    
+          // subject & snippet
+          const subj = document.createElement('div');
+          subj.className = 'email-subject';
+          subj.textContent = e.subject;
+          const snip = document.createElement('div');
+          snip.className = 'email-snippet';
+          snip.textContent = e.snippet;
+    
+          // reply button
+          const btn = document.createElement('button');
+          btn.className = 'reply-btn';
+          btn.textContent = 'Reply';
+          btn.dataset.index = idx;
+    
+          li.append(hdr, subj, snip, btn);
+          emailListEl.append(li);
+        });
+      }
+    
       function updateBanner() {
         const meetingCount = currentCalendar.length;
-        const emailCount = emails.length;
-        const moodText = selectedMood ? ` | Mood: ${selectedMood}` : '';
+        const emailCount   = emails.length;
+        const moodText     = selectedMood ? ` | Mood: ${selectedMood}` : '';
         aiBannerEl.textContent =
           `I've scanned your calendar and emails: You have ${meetingCount} meetings today and ${emailCount} emails waiting.${moodText}`;
       }
-
+    
+      // New: day-view calendar (8 AM–6 PM)
+      function renderCalendarDay() {
+        calendarBodyEl.innerHTML = '';
+        for (let h = 8; h <= 18; h++) {
+          const tr = document.createElement('tr');
+          const tdTime = document.createElement('td');
+          const hour12 = (h % 12) === 0 ? 12 : h % 12;
+          tdTime.textContent = hour12 + ':00 ' + (h < 12 ? 'AM' : 'PM');
+    
+          const tdEvt = document.createElement('td');
+          currentCalendar
+            .filter(ev => {
+              const [time, ampm] = ev.time.split(' ');
+              let [hr, min] = time.split(':').map(Number);
+              if (ampm === 'PM' && hr < 12) hr += 12;
+              if (ampm === 'AM' && hr === 12) hr = 0;
+              return hr === h;
+            })
+            .forEach(ev => {
+              const div = document.createElement('div');
+              div.className = 'calendar-event';
+              div.textContent = ev.title;
+              tdEvt.append(div);
+            });
+    
+          tr.append(tdTime, tdEvt);
+          calendarBodyEl.append(tr);
+        }
+        updateBanner();
+      }
+    
+      // Utils
       function shuffleArray(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [arr[i], arr[j]] = [arr[j], arr[i]];
         }
       }
-
-      // Initialize
+    
+      // Initialization
       function init() {
-        currentTasks = originalTasks.map(t => ({ ...t }));
+        currentTasks    = originalTasks.map(t => ({ ...t }));
         currentCalendar = originalCalendar.map(e => ({ ...e }));
         renderTasks();
-        renderCalendar();
+        renderCalendarDay();
         renderEmails();
       }
-
-      // Mood selector
+    
+      // --- Event Bindings ---
+    
+      // Mood selector → updates banner + “feeling” text
       emojis.forEach(emo => {
         emo.addEventListener('click', () => {
           emojis.forEach(e => e.classList.remove('selected'));
@@ -618,15 +661,14 @@
           selectedMood = emo.dataset.value;
         });
       });
-           document.getElementById('updateMoodBtn').addEventListener('click', () => {
-     if (!selectedMood) return alert('Please select a mood first!');
-     updateBanner();
-       // update the new "Feeling" display
-       document.getElementById('feeling').textContent =
-         selectedMood.charAt(0).toUpperCase() + selectedMood.slice(1);
-    });
-
-
+      document.getElementById('updateMoodBtn').addEventListener('click', () => {
+        if (!selectedMood) return alert('Please select a mood first!');
+        updateBanner();
+        // set the Feeling display
+        feelingEl.textContent =
+          selectedMood.charAt(0).toUpperCase() + selectedMood.slice(1);
+      });
+    
       // Task buttons
       document.getElementById('reshuffleBtn').addEventListener('click', () => {
         shuffleArray(currentTasks);
@@ -643,7 +685,7 @@
         currentTasks = originalTasks.map(t => ({ ...t }));
         renderTasks();
       });
-
+    
       // Calendar buttons
       document.getElementById('addMeetingBtn').addEventListener('click', () => {
         document.getElementById('meetingModal').style.display = 'flex';
@@ -654,33 +696,33 @@
         document.getElementById('meetingTitle').value = '';
       });
       document.getElementById('saveMeetingBtn').addEventListener('click', () => {
-        const time = document.getElementById('meetingTime').value.trim();
+        const time  = document.getElementById('meetingTime').value.trim();
         const title = document.getElementById('meetingTitle').value.trim();
         if (!time || !title) {
           alert('Please fill in both fields.');
           return;
         }
         currentCalendar.push({ time, title });
-        renderCalendar();
+        renderCalendarDay();
         document.getElementById('meetingModal').style.display = 'none';
         document.getElementById('meetingTime').value = '';
         document.getElementById('meetingTitle').value = '';
       });
       document.getElementById('resetCalendarBtn').addEventListener('click', () => {
         currentCalendar = originalCalendar.map(e => ({ ...e }));
-        renderCalendar();
+        renderCalendarDay();
       });
-
-      // Email reply button
+    
+      // Email reply
       emailListEl.addEventListener('click', e => {
         if (e.target.classList.contains('reply-btn')) {
-          const idx = e.target.dataset.index;
+          const idx   = e.target.dataset.index;
           const email = emails[idx];
-          appendMessage(`Draft a response to: "${email}"`, 'user');
-          aiRespond(`Draft a response to: "${email}"`);
+          appendMessage(`Draft a response to: "${email.subject}"`, 'user');
+          aiRespond(`Draft a response to: "${email.subject}"`);
         }
       });
-
+    
       // Chat simulation
       const chatMessagesEl = document.getElementById('chatMessages');
       function appendMessage(text, cls) {
@@ -696,7 +738,7 @@
           mood: selectedMood,
           sleep: '7',
           rested: '80%',
-          heartRate: document.getElementById('heartRate').textContent,
+          feeling: feelingEl.textContent,
           calendar: currentCalendar,
           tasks: currentTasks
         };
@@ -706,7 +748,7 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: userText, context })
           });
-          const data = await res.json();
+          const data  = await res.json();
           const reply = data.reply || 'Hmm, I didn’t get that.';
           const aiMsgs = chatMessagesEl.querySelectorAll('.chat-message.ai');
           if (aiMsgs.length) {
@@ -730,9 +772,11 @@
       document.getElementById('chatInput').addEventListener('keydown', e => {
         if (e.key === 'Enter') document.getElementById('sendChatBtn').click();
       });
-
+    
+      // Fire it up
       init();
     });
-  </script>
+    </script>
+    
 </body>
 </html>
