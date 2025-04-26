@@ -87,24 +87,40 @@
     }
     /* Main Content Sections */
     .main-content {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .section {
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      flex: 1;
-      min-width: 280px;
-      max-width: 300px;
-    }
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: auto auto auto;
+  grid-template-areas:
+    "tasks"
+    "emails"
+    "calendar";
+  gap: 20px;
+  justify-items: center;
+}
+
+.section {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 300px;
+}
+
     .section h2 {
       margin-top: 0;
     }
+    .tasks-section    { grid-area: tasks; }
+.emails-section   { grid-area: emails; }
+.calendar-section { grid-area: calendar; }
+
+
     /* Task List Styles */
+    .tasks-section {
+  width: 100%;
+  max-width: 600px; /* bump this up to whatever you need */
+}
+
     .task-list {
       list-style: none;
       padding: 0;
@@ -131,6 +147,12 @@
     /* Personal Tasks */
     .personal { border-left-color: #9b59b6; }
     /* Calendar Styles */
+
+    .calendar-section {
+  /* existing styles… */
+  max-width: 850px;   /* instead of 300px */
+  width: 100%;
+}
     .calendar-list {
       list-style: none;
       padding: 0;
@@ -145,32 +167,103 @@
       font-size: 15px;
       line-height: 1.4;
     }
-    /* Email List Styles */
-    .email-list {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
-    .email-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #f9f9f9;
-      margin: 10px 0;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 15px;
-      line-height: 1.4;
-    }
-    .reply-btn {
-      padding: 6px 12px;
-      font-size: 14px;
-      background-color: #0984e3;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-    }
+
+/* Emails section wrapper */
+.emails-section {
+  width: 100%;
+  max-width: 600px;
+  background: #f1f7f9;
+  border: 1px solid #cddde4;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* Header with inbox title & count badge */
+.emails-section .email-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #cddde4;
+  margin-bottom: 16px;
+  font-size: 18px;
+}
+.emails-section .email-header .email-count {
+  background: #0984e3;
+  color: white;
+  border-radius: 12px;
+  padding: 4px 10px;
+  font-size: 14px;
+}
+
+/* Make the list scrollable if long */
+.email-list {
+  max-height: 300px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Individual message cards */
+.email-item {
+  background: white;
+  padding: 14px 18px;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+.email-item:hover {
+  background-color: #f5fcff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+}
+
+/* Header row inside each message */
+.email-item-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.email-sender {
+  font-weight: 600;
+}
+.email-time {
+  font-size: 13px;
+  color: #777;
+}
+
+/* Subject & snippet */
+.email-subject {
+  margin: 6px 0;
+  font-size: 15px;
+  font-weight: 500;
+}
+.email-snippet {
+  font-size: 14px;
+  color: #555;
+  line-height: 1.4;
+}
+
+/* Reply button aligned to the right */
+.reply-btn {
+  align-self: flex-end;
+  margin-top: 10px;
+  padding: 6px 14px;
+  font-size: 14px;
+  background-color: #0984e3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.reply-btn:hover {
+  background-color: #076bb5;
+}
+
     /* Actions */
     .actions {
       text-align: center;
@@ -193,6 +286,7 @@
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
       margin-top: 20px;
       padding: 20px;
+      min-width: 650px;
     }
     .chat-header {
       text-align: center;
@@ -314,7 +408,7 @@
       <p>Sleep Hours: <strong>7</strong></p>
       <p>Rested Level: <strong>80%</strong></p>
       <p>Overall Productivity: <strong>High</strong></p>
-      <p>Heart Rate: <span class="heart-icon">❤️</span><strong id="heartRate">70 bpm</strong></p>
+      <p>Feeling: <strong id="feeling">Stressed</strong></p>
     </div>
 
     <div class="main-content">
@@ -341,10 +435,13 @@
 
       <!-- Emails Section -->
       <div class="section emails-section">
-        <h2>Emails</h2>
+        <div class="email-header">
+          <span>Inbox</span>
+          <span class="email-count">(3)</span>
+        </div>
         <ul class="email-list" id="emailList"></ul>
       </div>
-    </div>
+      
 
     <!-- AI Chat Box -->
     <div class="chat-box">
@@ -396,10 +493,25 @@
       let currentCalendar = [];
 
       const emails = [
-        'Project status update requested.',
-        'HR: Reminder about policy changes.',
-        'Invitation: Team lunch on Friday.'
-      ];
+  {
+    sender: 'Client A',
+    time:   '9:15 AM',
+    subject:'Project status update requested',
+    snippet:'Could you please send over the latest project report?'
+  },
+  {
+    sender: 'HR Department',
+    time:   '8:45 AM',
+    subject:'Reminder about policy changes',
+    snippet:'Please review the updated company policies by EOD.'
+  },
+  {
+    sender: 'Team Lead',
+    time:   'Yesterday',
+    subject:'Invitation: Team lunch on Friday',
+    snippet:'Let us know if you can make it to the team lunch this Friday.'
+  }
+];
 
       // Element refs
       const taskListEl = document.getElementById('taskList');
@@ -437,20 +549,42 @@
       }
 
       function renderEmails() {
-        emailListEl.innerHTML = '';
-        emails.forEach((email, idx) => {
-          const li = document.createElement('li');
-          li.className = 'email-item';
-          const span = document.createElement('span');
-          span.textContent = email;
-          const btn = document.createElement('button');
-          btn.textContent = 'Reply';
-          btn.className = 'reply-btn';
-          btn.dataset.index = idx;
-          li.append(span, btn);
-          emailListEl.append(li);
-        });
-      }
+  const emailListEl = document.getElementById('emailList');
+  emailListEl.innerHTML = '';         // clear old items
+  emails.forEach((e, idx) => {
+    const li = document.createElement('li');
+    li.className = 'email-item';
+
+    // header (sender + time)
+    const hdr = document.createElement('div');
+    hdr.className = 'email-item-header';
+    const sender = document.createElement('span');
+    sender.className = 'email-sender';
+    sender.textContent = e.sender;
+    const time = document.createElement('span');
+    time.className = 'email-time';
+    time.textContent = e.time;
+    hdr.append(sender, time);
+
+    // subject & snippet
+    const subj = document.createElement('div');
+    subj.className = 'email-subject';
+    subj.textContent = e.subject;
+    const snip = document.createElement('div');
+    snip.className = 'email-snippet';
+    snip.textContent = e.snippet;
+
+    // reply button
+    const btn = document.createElement('button');
+    btn.className = 'reply-btn';
+    btn.textContent = 'Reply';
+    btn.dataset.index = idx;
+
+    li.append(hdr, subj, snip, btn);
+    emailListEl.append(li);
+  });
+}
+
 
       function updateBanner() {
         const meetingCount = currentCalendar.length;
@@ -484,10 +618,14 @@
           selectedMood = emo.dataset.value;
         });
       });
-      document.getElementById('updateMoodBtn').addEventListener('click', () => {
-        if (!selectedMood) return alert('Please select a mood first!');
-        updateBanner();
-      });
+           document.getElementById('updateMoodBtn').addEventListener('click', () => {
+     if (!selectedMood) return alert('Please select a mood first!');
+     updateBanner();
+       // update the new "Feeling" display
+       document.getElementById('feeling').textContent =
+         selectedMood.charAt(0).toUpperCase() + selectedMood.slice(1);
+    });
+
 
       // Task buttons
       document.getElementById('reshuffleBtn').addEventListener('click', () => {
@@ -563,7 +701,7 @@
           tasks: currentTasks
         };
         try {
-          const res = await fetch('https://workpilot-api.onrender.com/chat', {
+          const res = await fetch('http://localhost:3001/chat', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ message: userText, context })
@@ -593,17 +731,6 @@
         if (e.key === 'Enter') document.getElementById('sendChatBtn').click();
       });
 
-      // Live heart rate
-      function updateHeartRate() {
-        const heartRateEl = document.getElementById('heartRate');
-        let base = 70;
-        setInterval(() => {
-          const fluctuation = Math.floor(Math.random() * 7) - 3;
-          const bpm = base + fluctuation;
-          heartRateEl.textContent = `${bpm} bpm`;
-        }, 1000);
-      }
-      updateHeartRate();
       init();
     });
   </script>
